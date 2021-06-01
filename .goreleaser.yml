@@ -1,0 +1,40 @@
+builds:
+    -
+        binary: kurun
+        env:
+            - CGO_ENABLED=0
+        ldflags: "-s -w -X main.version={{ .Version }} -X main.commitHash={{ .ShortCommit }} -X main.buildDate={{ .Date }}"
+        goos:
+            - linux
+            - darwin
+            - windows
+        goarch:
+            - amd64
+
+archives:
+    -
+        id: bin
+        name_template: "kurun-{{ .Os }}-{{ .Arch }}"
+        format: binary
+    -
+        id: targz
+        name_template: "kurun-{{ .Os }}-{{ .Arch }}"
+
+checksum:
+    name_template: "kurun_checksums.txt"
+
+changelog:
+    skip: true
+
+brews:
+    -
+        tap:
+            owner: banzaicloud
+            name: homebrew-tap
+        folder: Formula
+        homepage: https://banzaicloud.com/blog/kurun
+        description: Run main.go in Kubernetes with one command
+        test: |
+            system "#{bin}/kurun --version"
+        dependencies:
+            - inlets
